@@ -13,8 +13,12 @@ func InitRouter() {
 
 	var router = r.Group("api")
 	{
-		router.GET("user/test_get", api.Test_get)
-		router.POST("user/test_post", api.Test_post)
+		router.POST("forward", api.Forward)
+		router.POST("face_input", api.Register)
+		router.GET("record_input", api.Record)
+
+		router.GET("user/test_get", api.TestGet)
+		router.POST("user/test_post", api.TestPost)
 	}
 
 	var auth = r.Group("api")
@@ -23,5 +27,5 @@ func InitRouter() {
 
 	}
 
-	_ = r.Run(":8080")
+	_ = r.Run(":5000")
 }

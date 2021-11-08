@@ -5,7 +5,7 @@ import (
 	. "server/models"
 )
 
-func Test_get(c *gin.Context) {
+func TestGet(c *gin.Context) {
 	var user = &User{
 		UserName: "mhy",
 		Password: "password",
@@ -17,7 +17,7 @@ func Test_get(c *gin.Context) {
 	})
 }
 
-func Test_post(c *gin.Context) {
+func TestPost(c *gin.Context) {
 	var user User
 	_ = c.ShouldBindJSON(&user)
 	c.JSON(200, gin.H{

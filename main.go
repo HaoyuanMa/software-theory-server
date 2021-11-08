@@ -8,7 +8,7 @@ import (
 
 func main() {
 	lib.InitDb()
-	_ = lib.GetDBConn().AutoMigrate(&models.User{})
+	_ = lib.GetDBConn().AutoMigrate(&models.User{}, &models.Staff{})
 
 	router.InitRouter()
 

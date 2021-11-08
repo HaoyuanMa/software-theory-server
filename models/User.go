@@ -7,7 +7,7 @@ import (
 
 type User struct {
 	gorm.Model
-	UserName string `gorm:"PRIMARY_KEY" json:"username"`
+	UserName string `json:"username"`
 	Password string `json:"password"`
 	Role     string `json:"role"`
 }
