@@ -31,5 +31,43 @@ func Register(c *gin.Context) {
 }
 
 func Record(c *gin.Context) {
+	var recordInput protocol.RecordInputProto
+	_ = c.BindJSON(&recordInput)
+	staff := getStaffByFaceId(recordInput.FaceId)
+	err := lib.GetDBConn().Create(&models.Record{
+		StaffId:   staff.ID,
+		StaffName: staff.Name,
+	}).Error
+	if err != nil {
+		c.JSON(500, gin.H{
+			"status":  500,
+			"message": "input failed",
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"status":  200,
+		"message": "ok",
+	})
+}
 
+func getStaffByFaceId(faceId string) models.Staff {
+	var staffs []models.Staff
+	db := lib.GetDBConn()
+	_ = db.Find(&staffs).Error
+	minDistance := -1
+	resultStaff := staffs[0]
+	for _, staff := range staffs {
+		curDistance := calDistance(faceId, staff.FaceId)
+		if curDistance < minDistance {
+			minDistance = curDistance
+			resultStaff = staff
+		}
+	}
+	return resultStaff
+}
+
+func calDistance(id string, id2 string) int {
+	//TODO: cal Distance
+	return 0
 }
