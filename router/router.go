@@ -13,9 +13,11 @@ func InitRouter() {
 
 	var router = r.Group("api")
 	{
+		router.GET("build_connection", api.BuildConnection)
+
 		router.POST("forward", api.Forward)
 		router.POST("face_input", api.Register)
-		router.GET("record_input", api.Record)
+		router.GET("record_input", api.InputRecord)
 
 		router.GET("user/test_get", api.TestGet)
 		router.POST("user/test_post", api.TestPost)
