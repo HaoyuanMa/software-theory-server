@@ -1,19 +1,19 @@
 package protocol
 
 type FaceInputProto struct {
-	Id     int    `json:"id"`
-	FaceId string `json:"face_id"`
+	Id     int64  `json:"id"`
+	FaceId string `json:"feature"`
 }
 
 type RecordInputProto struct {
-	FaceId string `json:"face_id"`
+	FaceId string `json:"feature"`
 }
 
 type ImageForwardProto struct {
 	Img    string  `json:"img"`
 	X1     float64 `json:"x1"`
 	X2     float64 `json:"x2"`
-	X3     float64 `json:"x3"`
-	X4     float64 `json:"x4"`
-	IsMask bool    `json:"is_mask"`
+	Y1     float64 `json:"y1"`
+	Y2     float64 `json:"y2"`
+	IsMask bool    `json:"mask"`
 }

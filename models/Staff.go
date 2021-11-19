@@ -6,5 +6,5 @@ type Staff struct {
 	gorm.Model
 	Name   string
 	Gender string
-	FaceId string
+	FaceId string `gorm:"type:Text"`
 }

@@ -17,7 +17,7 @@ func InitRouter() {
 
 		router.POST("forward", api.Forward)
 		router.POST("face_input", api.Register)
-		router.GET("record_input", api.InputRecord)
+		router.POST("record_input", api.InputRecord)
 
 		router.GET("user/test_get", api.TestGet)
 		router.POST("user/test_post", api.TestPost)
