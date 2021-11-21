@@ -9,12 +9,17 @@ import (
 	"server/models"
 	"server/protocol"
 	"strconv"
+	"time"
 )
 
 var StreamChan chan protocol.ImageForwardProto
 var count int
+var lastStaffId uint
+var lastStaffTime int64
 
 func init() {
+	lastStaffId = 0
+	lastStaffTime = time.Now().Unix()
 	count = 0
 	StreamChan = make(chan protocol.ImageForwardProto, 1000)
 }
@@ -122,19 +127,39 @@ func InputRecord(c *gin.Context) {
 	var recordInput protocol.RecordInputProto
 	recordInput.FaceId = c.PostForm("feature")
 	fmt.Println(recordInput)
-	//staff := getStaffByFaceId(recordInput.FaceId)
-	//TODO: 判断是否为同一人
-	//err := lib.GetDBConn().Create(&models.Record{
-	//	StaffId:   staff.ID,
-	//	StaffName: staff.Name,
-	//}).Error
-	//if err != nil {
-	//	c.JSON(500, gin.H{
-	//		"status":  500,
-	//		"message": "input failed",
-	//	})
-	//	return
-	//}
+	staff := getStaffByFaceId(recordInput.FaceId)
+	if staff.ID == lastStaffId {
+		if time.Now().Unix()-lastStaffTime > 30*60 {
+			lastStaffTime = time.Now().Unix()
+			lastStaffId = staff.ID
+			err := lib.GetDBConn().Create(&models.Record{
+				StaffId:   staff.ID,
+				StaffName: staff.Name,
+			}).Error
+			if err != nil {
+				c.JSON(500, gin.H{
+					"status":  500,
+					"message": "input failed",
+				})
+				return
+			}
+		}
+	} else {
+		lastStaffTime = time.Now().Unix()
+		lastStaffId = staff.ID
+		err := lib.GetDBConn().Create(&models.Record{
+			StaffId:   staff.ID,
+			StaffName: staff.Name,
+		}).Error
+		if err != nil {
+			c.JSON(500, gin.H{
+				"status":  500,
+				"message": "input failed",
+			})
+			return
+		}
+	}
+
 	c.JSON(200, gin.H{
 		"status":  200,
 		"message": "ok",
