@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"math"
 	"net/http"
 	"server/lib"
 	"server/models"
 	"server/protocol"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -170,7 +172,7 @@ func getStaffByFaceId(faceId string) models.Staff {
 	var staffs []models.Staff
 	db := lib.GetDBConn()
 	_ = db.Find(&staffs).Error
-	minDistance := -1
+	minDistance := -1.0
 	resultStaff := staffs[0]
 	for _, staff := range staffs {
 		curDistance := calDistance(faceId, staff.FaceId)
@@ -182,7 +184,14 @@ func getStaffByFaceId(faceId string) models.Staff {
 	return resultStaff
 }
 
-func calDistance(id string, id2 string) int {
-	//TODO: cal Distance
-	return 0
+func calDistance(id string, id2 string) float64 {
+	v1 := strings.Fields(id)
+	v2 := strings.Fields(id2)
+	sum := 0.0
+	for i := 0; i < 128; i++ {
+		t1, _ := strconv.ParseFloat(v1[i], 64)
+		t2, _ := strconv.ParseFloat(v2[i], 64)
+		sum += math.Pow(t1-t2, 2)
+	}
+	return math.Pow(sum, 0.5)
 }
