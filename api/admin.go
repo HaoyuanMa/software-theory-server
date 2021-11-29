@@ -21,7 +21,7 @@ func GetNoMaskList(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"status":  200,
 		"message": "ok",
-		"records": records,
+		"items":   records,
 	})
 }
 
@@ -39,7 +39,7 @@ func GetStaffList(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"status":  200,
 		"message": "ok",
-		"records": staffs,
+		"items":   staffs,
 	})
 }
 
@@ -48,7 +48,7 @@ func Login(c *gin.Context) {
 	_ = c.ShouldBindJSON(login)
 	db := lib.GetDBConn()
 	var user models.User
-	db.Where("user_name = ?", user.UserName).Find(user)
+	db.Where("user_name = ?", login.UserName).Find(&user)
 	if user.Password == login.PassWord {
 		c.JSON(200, gin.H{
 			"status":  200,

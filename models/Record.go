@@ -6,4 +6,6 @@ type Record struct {
 	gorm.Model
 	StaffId   uint
 	StaffName string
+	Email     string
+	Gender    string
 }

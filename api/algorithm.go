@@ -137,6 +137,8 @@ func InputRecord(c *gin.Context) {
 			err := lib.GetDBConn().Create(&models.Record{
 				StaffId:   staff.ID,
 				StaffName: staff.Name,
+				Email:     staff.Email,
+				Gender:    staff.Gender,
 			}).Error
 			if err != nil {
 				c.JSON(500, gin.H{
@@ -152,6 +154,8 @@ func InputRecord(c *gin.Context) {
 		err := lib.GetDBConn().Create(&models.Record{
 			StaffId:   staff.ID,
 			StaffName: staff.Name,
+			Email:     staff.Email,
+			Gender:    staff.Gender,
 		}).Error
 		if err != nil {
 			c.JSON(500, gin.H{
