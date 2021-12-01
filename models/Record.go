@@ -8,4 +8,5 @@ type Record struct {
 	StaffName string
 	Email     string
 	Gender    string
+	IsWarning bool `gorm: "default:false"`
 }

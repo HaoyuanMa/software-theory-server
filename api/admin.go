@@ -13,15 +13,18 @@ func GetNoMaskList(c *gin.Context) {
 	err := db.Find(&records).Error
 	if err != nil {
 		c.JSON(500, gin.H{
-			"status":  500,
+			"code":    500,
 			"message": "failed",
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"status":  200,
+		"code":    200,
 		"message": "ok",
-		"items":   records,
+		"data": &protocol.NoMaskList{
+			Total: len(records),
+			Items: records,
+		},
 	})
 }
 
@@ -31,15 +34,18 @@ func GetStaffList(c *gin.Context) {
 	err := db.Find(&staffs).Error
 	if err != nil {
 		c.JSON(500, gin.H{
-			"status":  500,
+			"code":    500,
 			"message": "failed",
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"status":  200,
+		"code":    200,
 		"message": "ok",
-		"items":   staffs,
+		"data": &protocol.StaffList{
+			Total: len(staffs),
+			Items: staffs,
+		},
 	})
 }
 
@@ -51,12 +57,12 @@ func Login(c *gin.Context) {
 	db.Where("user_name = ?", login.UserName).Find(&user)
 	if user.Password == login.PassWord {
 		c.JSON(200, gin.H{
-			"status":  200,
+			"code":    200,
 			"message": "ok",
 		})
 	} else {
 		c.JSON(403, gin.H{
-			"status":  403,
+			"code":    403,
 			"message": "failed",
 		})
 	}

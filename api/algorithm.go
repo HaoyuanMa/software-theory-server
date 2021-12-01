@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -129,7 +130,18 @@ func InputRecord(c *gin.Context) {
 	var recordInput protocol.RecordInputProto
 	recordInput.FaceId = c.PostForm("feature")
 	fmt.Println(recordInput)
-	staff := getStaffByFaceId(recordInput.FaceId)
+	staff, err := getStaffByFaceId(recordInput.FaceId)
+	if err != nil {
+		fmt.Println("staff not found")
+		c.JSON(200, gin.H{
+			"status":  200,
+			"message": "ok",
+		})
+		return
+	}
+	fmt.Println("last: ")
+	fmt.Println(lastStaffId)
+	fmt.Println(staff.ID)
 	if staff.ID == lastStaffId {
 		if time.Now().Unix()-lastStaffTime > 30*60 {
 			lastStaffTime = time.Now().Unix()
@@ -172,20 +184,27 @@ func InputRecord(c *gin.Context) {
 	})
 }
 
-func getStaffByFaceId(faceId string) models.Staff {
+func getStaffByFaceId(faceId string) (models.Staff, error) {
 	var staffs []models.Staff
 	db := lib.GetDBConn()
 	_ = db.Find(&staffs).Error
-	minDistance := -1.0
+	minDistance := 0.45
 	resultStaff := staffs[0]
 	for _, staff := range staffs {
+		if len(staff.FaceId) <= 0 {
+			continue
+		}
 		curDistance := calDistance(faceId, staff.FaceId)
+		fmt.Println(curDistance)
 		if curDistance < minDistance {
 			minDistance = curDistance
 			resultStaff = staff
 		}
 	}
-	return resultStaff
+	if minDistance >= 0.45 {
+		return resultStaff, errors.New("not found")
+	}
+	return resultStaff, nil
 }
 
 func calDistance(id string, id2 string) float64 {
